@@ -2,10 +2,10 @@
 O FastRoute é um projeto de backend que visa facilitar a inclusão de rotas em uma aplicação REST, permitindo a criação rápida de endpoints CRUD com operações básicas. O banco de dados utilizado é o SQLite para facilitar os testes e a configuração inicial. Este projeto não possui frontend, focando apenas no backend.
 
 ## Requisitos
-PHP 7.4+ ou superior
-Composer
-Banco de dados SQLite
-Postman ou Thunder Client (ou qualquer cliente de API REST)
+- PHP 7.4+ ou superior
+- Composer
+- Banco de dados SQLite
+- Postman ou Thunder Client (ou qualquer cliente de API REST)
 ## Estrutura do Projeto
 A estrutura de pastas do projeto está organizada da seguinte forma:
 
