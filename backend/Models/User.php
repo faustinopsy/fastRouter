@@ -1,17 +1,17 @@
 <?php
 namespace Backend\Api\Models;
 class User {
-    private $usuario_id;
+    private $userid;
     private $nome;
     private $email;
     private $senha;
 
     public function getUsuarioId(){
-        return $this->usuario_id;
+        return $this->userid;
     }
 
-    public function setUsuarioId($usuario_id): self{
-        $this->usuario_id = $usuario_id;
+    public function setUsuarioId($userid): self{
+        $this->userid = $userid;
 
         return $this;
     }

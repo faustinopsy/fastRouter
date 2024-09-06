@@ -43,17 +43,17 @@ class UserRepository {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getUserById($usuario_id) {
+    public function getUserById($userid) {
         $query = "SELECT * FROM usuarios WHERE usuario_id = :usuario_id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":usuario_id", $usuario_id, PDO::PARAM_INT);
+        $stmt->bindParam(":usuario_id", $userid, PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function updateUser(User $usuario) {
-        $usuario_id = $usuario->getUsuarioId();
+        $userid = $usuario->getUsuarioId();
         $nome = $usuario->getNome();
         $email = $usuario->getEmail();
         $senha = $usuario->getSenha();
@@ -62,17 +62,17 @@ class UserRepository {
         $stmt->bindParam(":nome", $nome);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":senha", $senha);
-        $stmt->bindParam(":usuario_id", $usuario_id);
+        $stmt->bindParam(":usuario_id", $userid);
     
         return $stmt->execute();
     }
     
-    public function deleteUser($usuario_id) {
+    public function deleteUser($userid) {
         $query = "DELETE FROM usuarios WHERE usuario_id = :usuario_id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":usuario_id", $usuario_id, PDO::PARAM_INT);
+        $stmt->bindParam(":usuario_id", $userid, PDO::PARAM_INT);
     
         return $stmt->execute();
     }
-}    
+}
 

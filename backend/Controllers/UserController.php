@@ -49,10 +49,7 @@ class UserController {
 
     public function updateUser($id) {
         $input = json_decode(file_get_contents('php://input'), true);
-        if($this->userRepository->getUsuarioByEmail($input['email'])){
-            echo json_encode(['status' => false, 'message' => 'existe uma restrição, e-mail único']);
-            exit;
-        }
+       
         $userid = $this->userRepository->getUserById($id);
         if ($userid) {
             $user = new User();
