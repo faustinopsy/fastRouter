@@ -2,7 +2,7 @@
 namespace Backend\Api;
 use Backend\Api\Rotas\Router;
 use Backend\Api\Http\HttpHeader;
-use Backend\Api\Rotas\Rotas;
+use Backend\Api\Rotas\AttributeRouter;
 
 require_once '../vendor/autoload.php';
 
@@ -13,9 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
+
+$router = new AttributeRouter();
+
+$router->passaController(\Backend\Api\Controllers\UserController::class);
+
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
 
-$arrayRotas = Rotas::fastRotas();
-
-Router::resolve($arrayRotas, $method, $uri);
+$router->resolve($method, $uri);
