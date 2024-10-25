@@ -1,9 +1,9 @@
 <?php
 
-namespace Backend\Api\Repositories;
+namespace Fast\Api\Repositories;
 
-use Backend\Api\Database\Database;
-use Backend\Api\Models\User;
+use Fast\Api\Database\Database;
+use Fast\Api\Models\User;
 use PDO;
 
 class UserRepository {
@@ -16,6 +16,14 @@ class UserRepository {
         $query = "SELECT * FROM usuarios WHERE email = :email";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":email", $email);
+        $stmt->execute();
+    
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function getUserByName($nome) {
+        $query = "SELECT * FROM usuarios WHERE nome = :nome";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":nome", $nome);
         $stmt->execute();
     
         return $stmt->fetch(PDO::FETCH_ASSOC);

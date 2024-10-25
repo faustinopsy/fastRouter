@@ -1,5 +1,5 @@
 <?php
-namespace Backend\Api\Database;
+namespace Fast\Api\Database;
 use PDO;
 use PDOException;
 use MongoDB\Client as MongoClient;

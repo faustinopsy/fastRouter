@@ -1,5 +1,5 @@
 <?php
-namespace Backend\Api\Models;
+namespace Fast\Api\Models;
 class User {
     private $userid;
     private $nome;

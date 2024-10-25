@@ -1,5 +1,5 @@
 <?php
-namespace Backend\Api\Http;
+namespace Fast\Api\Http;
 
 class HttpHeader {
     private static $allowedOrigins = [
@@ -7,7 +7,7 @@ class HttpHeader {
         'http://localhost:3000',
     ];
 
-    public static function setDefaultHeaders() {
+    public static function adicionarCabecalhos() {
 
         $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
         if (in_array($origin, self::$allowedOrigins)) {
@@ -20,7 +20,7 @@ class HttpHeader {
         header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
         header("Access-Control-Max-Age: 3600");
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        header("Access-Control-Allow-Credentials: true"); 
+        header("Access-Control-Allow-Credentials: true");
     }
 
     public static function sendNotAllowedMethod() {
