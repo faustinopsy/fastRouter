@@ -7,7 +7,7 @@ use ReflectionMethod;
 class AttributeRouter {
     private array $rotas = [];
 
-    public function passaController(string $controllerClass) {
+    public function passaControlador(string $controllerClass) {
         $controllerReflection = new ReflectionClass($controllerClass);
         $methods = $controllerReflection->getMethods(ReflectionMethod::IS_PUBLIC);
 
@@ -29,39 +29,40 @@ class AttributeRouter {
             echo json_encode(['status' => false, 'message' => 'Método não permitido']);
             exit();
         }
-
+    
         $uri = parse_url($uri, PHP_URL_PATH);
-
+    
         foreach ($this->rotas[$method] as $route => $action) {
             $pattern = preg_replace_callback('/\{([a-zA-Z_][a-zA-Z0-9_]*)(?::([^}]+))?\}/', function ($matches) {
                 $paramName = $matches[1];
                 $regex = isset($matches[2]) ? $matches[2] : '[^/]+';
                 return '(?P<' . $paramName . '>' . $regex . ')';
             }, $route);
-            $pattern = '#^' . $pattern . '$#';
-
+            
+            $pattern = '#^' . $pattern . '$#u';
+    
             // Logs para depuração
             error_log("Route: $route");
             error_log("Generated Pattern: $pattern");
             error_log("URI: $uri");
-
+    
             if (preg_match($pattern, $uri, $matches)) {
                 error_log("Matches: " . print_r($matches, true));
-
+    
                 $intanciaController = new $action[0]();
                 $nomeMetodo = $action[1];
-
+    
                 $params = array_filter(
                     $matches,
                     fn($key) => is_string($key),
                     ARRAY_FILTER_USE_KEY
                 );
-
+    
                 $data = json_decode(file_get_contents('php://input'));
-
+    
                 $metodoRefletido = new ReflectionMethod($intanciaController, $nomeMetodo);
                 $parametros = $metodoRefletido->getParameters();
-
+    
                 $args = [];
                 foreach ($parametros as $param) {
                     $nome = $param->getName();
@@ -73,13 +74,15 @@ class AttributeRouter {
                         $args[] = null;
                     }
                 }
-
+    
                 return call_user_func_array([$intanciaController, $nomeMetodo], $args);
             }
         }
-
+    
         http_response_code(404);
         echo json_encode(['status' => false, 'message' => 'Rota não encontrada']);
         exit();
     }
+    
+    
 }

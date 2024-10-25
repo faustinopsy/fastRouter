@@ -12,9 +12,9 @@ class UserController {
     public function __construct() {
         $this->userRepository = new UserRepository();
     }
-    #[Router('/users/email/{email:.+}', methods: ['GET'])]
-    public function getUserByEmail($email) {
-        $user = $this->userRepository->getUsuarioByEmail($email);
+    #[Router('/users/nome/{nome:.+}', methods: ['GET'])]
+    public function getUserByName($nome) {
+        $user = $this->userRepository->getUserByName($nome);
         if ($user) {
             http_response_code(200);
             echo json_encode($user);
@@ -24,18 +24,21 @@ class UserController {
         }
     }
 
-        /*Regex Usada: /\{([a-zA-Z0-9_]+)(?::([^}]+))?\}/
-
-        \{ e \}: Corresponde às chaves que delimitam o parâmetro.
-        ([a-zA-Z0-9_]+): Captura o nome do parâmetro.
-        (?::([^}]+))?: Opcionalmente captura a regex personalizada após o :.
-        ([^}]+): Captura qualquer caractere que não seja }.
-        */
-    #[Router('/users/data/{dataini:\d{4}-\d{2}-\d{2}}/{datafim:\d{4}-\d{2}-\d{2}}', methods: ['GET'])]
+      
+    #[Router('/users/data/{dataini}/{datafim}', methods: ['GET'])]
     public function getUsersByDateRange($dataini, $datafim) {
+        // Verificar se as datas estão no formato YYYY-MM-DD
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dataini) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $datafim)) {
+            http_response_code(400);
+            echo json_encode(['status' => false, 'message' => 'Formato de data inválido']);
+            return;
+        }
+    
         http_response_code(200);
-            echo json_encode(['data inicial'=> $dataini, 'dataFinal'=>$datafim]);
+        echo json_encode(['dataInicial' => $dataini, 'dataFinal' => $datafim]);
     }
+    
+        
     #[Router('/users', methods: ['GET'])]
     public function getAllUsers() {
         $users = $this->userRepository->getAllUsers();
@@ -56,23 +59,40 @@ class UserController {
     
 
     #[Router('/users', methods: ['POST'])]
-    public function createUser() {
-        $input = json_decode(file_get_contents('php://input'), true);
-        if($this->userRepository->getUsuarioByEmail($input['email'])){
+    public function createUser($data) {
+        if($this->userRepository->getUsuarioByEmail($data->email)){
             echo json_encode(['status' => false, 'message' => 'Usuário já existe']);
             exit;
         }
         $user = new User();
-        $user->setNome($input['nome']);
-        $user->setEmail($input['email']);
-        $user->setSenha($input['senha']);
+        $user->setNome($data->nome);
+        $user->setEmail($data->email);
+        $user->setSenha($data->senha);
         $createdUser = $this->userRepository->createUser($user);
        if($createdUser){
         http_response_code(201);
         echo json_encode(['status' => true, 'message' => 'Usuário criado']);
        }
-        
     }
+    #[Router('/login', methods: ['POST'])]
+    public function login($data) {
+        if (!isset($data->email, $data->senha)) {
+            http_response_code(400);
+            echo json_encode(["error" => "Email e senha são necessários para o login."]);
+            return;
+        }
+        $usuario = $this->userRepository->getUsuarioByEmail($data->email);
+        if ($usuario && password_verify($data->senha, $usuario['senha'])) {
+            unset($usuario['senha']);
+            http_response_code(200);
+            echo json_encode(["message" => "Login bem-sucedido.",
+             "usuario" => [$usuario]]);
+        } else {
+            http_response_code(401);
+            echo json_encode(["error" => "Email ou senha inválidos."]);
+        }
+    }
+
     #[Router('/users/{id}', methods: ['PUT'])]
     public function updateUser($id) {
         $input = json_decode(file_get_contents('php://input'), true);
@@ -106,4 +126,5 @@ class UserController {
             echo json_encode(['status' => false, 'message' => 'Usuário não encontrado']);
         }
     }
+    
 }

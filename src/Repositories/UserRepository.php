@@ -12,6 +12,15 @@ class UserRepository {
     public function __construct() {
         $this->conn = Database::getInstance();
     }
+    public function getUserByName($nome) {
+        $query = "SELECT * FROM usuarios WHERE nome LIKE :nome";
+        $stmt = $this->conn->prepare($query);
+        $nome = $nome . '%';
+        $stmt->bindParam(":nome", $nome, PDO::PARAM_STR);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     public function getUsuarioByEmail($email) {
         $query = "SELECT * FROM usuarios WHERE email = :email";
         $stmt = $this->conn->prepare($query);
@@ -20,7 +29,6 @@ class UserRepository {
     
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    
     public function createUser(User $usuario) {
         $nome = $usuario->getNome();
         $email = $usuario->getEmail();
