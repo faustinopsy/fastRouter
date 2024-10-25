@@ -11,7 +11,7 @@ class Database {
     private $config;
 
     private function __construct() {
-        $this->config = require 'config.php';
+        $this->config = Config::get();
         $dbConfig = $this->config['database'];
         $driver = $dbConfig['driver'];
 
@@ -37,15 +37,15 @@ class Database {
                     $dsn = "pgsql:host={$pgsqlConfig['host']};port={$pgsqlConfig['port']};dbname={$pgsqlConfig['db_name']};user={$pgsqlConfig['username']};password={$pgsqlConfig['password']}";
                     $this->conn = new PDO($dsn);
                     break;
-                // case 'mongodb':
-                //     $mongodbConfig = $dbConfig['mongodb'];
-                //     $dsn = "mongodb://{$mongodbConfig['host']}:{$mongodbConfig['port']}";
-                //     $this->conn = new MongoClient($dsn, [
-                //         'username' => $mongodbConfig['username'],
-                //         'password' => $mongodbConfig['password']
-                //     ]);
-                //     $this->conn = $this->conn->selectDatabase($mongodbConfig['db_name']);
-                //     break;
+                case 'mongodb':
+                    $mongodbConfig = $dbConfig['mongodb'];
+                    $dsn = "mongodb://{$mongodbConfig['host']}:{$mongodbConfig['port']}";
+                    $this->conn = new MongoClient($dsn, [
+                        'username' => $mongodbConfig['username'],
+                        'password' => $mongodbConfig['password']
+                    ]);
+                    $this->conn = $this->conn->selectDatabase($mongodbConfig['db_name']);
+                    break;
             }
 
             if (in_array($driver, ['mysql', 'sqlite', 'sqlsrv', 'pgsql'])) {
@@ -65,5 +65,4 @@ class Database {
         return self::$instance->conn;
     }
 
-    private function __clone() {}
 }
