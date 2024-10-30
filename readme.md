@@ -90,6 +90,8 @@ class UserController {
 ### Vantagens do Novo Sistema
 - **Facilidade de uso**: basta definir as rotas diretamente nos métodos, sem precisar configurar manualmente cada rota.
 - **Mapeamento Automático**: o sistema de roteamento detecta automaticamente os atributos e associa a rota ao método correspondente.
+verificar a classe Usercontroller para se familiarizar sobre a contrução de métodos.
+tais como $id para parametro números recebidos na url, e a palavra chave $data para o corpo da requisição, essa informação é extraida na classe AttributeRouter 
 
 ## Endpoints Disponíveis
 - `GET /users` - Retorna todos os usuários
