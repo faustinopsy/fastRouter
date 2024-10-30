@@ -62,7 +62,7 @@ class AttributeRouter {
     
                 $metodoRefletido = new ReflectionMethod($intanciaController, $nomeMetodo);
                 $parametros = $metodoRefletido->getParameters();
-    
+                
                 $args = [];
                 foreach ($parametros as $param) {
                     $nome = $param->getName();
@@ -70,11 +70,13 @@ class AttributeRouter {
                         $args[] = $params[$nome];
                     } elseif ($nome === 'data') {
                         $args[] = $data;
+                    }elseif (count($parametros)==2) {
+                        $args[] = $params[$nome];
+                        $args[] = $data;
                     } else {
                         $args[] = null;
                     }
                 }
-    
                 return call_user_func_array([$intanciaController, $nomeMetodo], $args);
             }
         }

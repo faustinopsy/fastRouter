@@ -94,16 +94,14 @@ class UserController {
     }
 
     #[Router('/users/{id}', methods: ['PUT'])]
-    public function updateUser($id) {
-        $input = json_decode(file_get_contents('php://input'), true);
-       
+    public function updateUser($id, $data) {
         $userid = $this->userRepository->getUserById($id);
         if ($userid) {
             $user = new User();
             $user->setUsuarioId($id ?? $user->getUsuarioId());
-            $user->setNome($input['nome'] ?? $user->getNome());
-            $user->setEmail($input['email'] ?? $user->getEmail());
-            $user->setSenha($input['senha'] ?? $user->getSenha());
+            $user->setNome($data->nome ?? $user->getNome());
+            $user->setEmail($data->email ?? $user->getEmail());
+            $user->setSenha($data->senha ?? $user->getSenha());
             
             $updatedUser = $this->userRepository->updateUser($user);
             if($updatedUser){
